@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Parthi Gajora | The Court Queen | Celestial Birthday</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
+      }
+    }
+  </script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0a0c;
+      color: #f0ede8;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    /* ========== LOADING SCREEN ========== */
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #0a0a0c;
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(0px);
+      transition: opacity 0.8s ease;
+    }
+
+    .loading-container {
+      text-align: center;
+      padding: 2rem;
+      background: rgba(20, 20, 28, 0.9);
+      border-radius: 48px;
+      border: 1px solid rgba(245, 163, 66, 0.5);
+      max-width: 500px;
+      width: 85%;
+    }
+
+    .loading-title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 2rem;
+      background: linear-gradient(135deg, #FFE6C7, #F5B042);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 1.5rem 0;
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #f5a342, #ffcc66);
+      border-radius: 10px;
+      transition: width 0.3s ease;
+    }
+
+    .loading-message {
+      font-size: 1rem;
+      color: #ffd9a5;
+      margin-top: 1rem;
+      min-height: 60px;
+    }
+
+    .loading-percent {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #f5a342;
+      margin: 1rem 0;
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(245, 163, 66, 0.3);
+      border-top: 3px solid #f5a342;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 1rem auto;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #1a1815;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #f5a342;
+      border-radius: 20px;
+    }
+
+    #canvas-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      pointer-events: none;
+    }
+
+    .ambient-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 30% 40%, rgba(10, 8, 12, 0.55) 0%, rgba(0, 0, 0, 0.88) 100%);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .memories-header {
+      text-align: center;
+      margin: 60px 0;
+    }
+
+    .memories-header h3 {
+      font-size: 2.5rem;
+      font-weight: 800;
+
+      background: linear-gradient(135deg,
+          #fff6d5,
+          #f5a342,
+          #ff8f50);
+
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .memories-header p {
+      opacity: .8;
+      margin-top: 12px;
+      font-size: 1.1rem;
+    }
+
+    /* NAVBAR */
+    .navbar {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      background: rgba(10, 10, 15, 0.75);
+      backdrop-filter: blur(16px);
+      border-radius: 80px;
+      padding: 0.8rem 2rem;
+      border: 1px solid rgba(245, 170, 70, 0.5);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .navbar a {
+      color: #FFDFB0;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 0.6rem 1.4rem;
+      border-radius: 50px;
+      transition: 0.2s;
+      font-size: 1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .navbar a:hover {
+      background: #E58E2E;
+      color: #13100c;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(229, 142, 46, 0.4);
+    }
+
+    @media (max-width: 780px) {
+      .navbar {
+        padding: 0.5rem 1rem;
+        width: 95%;
+      }
+
+      .navbar a {
+        padding: 0.4rem 0.9rem;
+        font-size: 0.8rem;
+      }
+    }
+
+    .section-card {
+      max-width: 1300px;
+      margin: 6rem auto 5rem auto;
+      padding: 3.5rem 3rem;
+      background: rgba(18, 18, 24, 0.7);
+      backdrop-filter: blur(18px);
+      border-radius: 56px;
+      border: 1px solid rgba(230, 180, 100, 0.35);
+      box-shadow: 0 40px 55px -20px rgba(0, 0, 0, 0.8);
+      transition: transform 0.4s;
+    }
+
+    .section-card:hover {
+      transform: translateY(-6px);
+      border-color: #f5a742;
+    }
+
+    h2 {
+      font-size: 3.2rem;
+      text-align: center;
+      margin-bottom: 2rem;
+      font-weight: 800;
+      background: linear-gradient(125deg, #FFE6C7, #F5B042, #FF8C42);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      z-index: 8;
+    }
+
+    .hero-glass {
+      background: rgba(8, 8, 12, 0.55);
+      backdrop-filter: blur(24px);
+      border-radius: 80px;
+      padding: 2.8rem 4rem;
+      border: 1px solid rgba(255, 200, 120, 0.6);
+      animation: floatGlow 4s infinite alternate;
+    }
+
+    @keyframes floatGlow {
+      0% {
+        transform: translateY(0px);
+        box-shadow: 0 25px 40px rgba(0, 0, 0, 0.3);
+      }
+
+      100% {
+        transform: translateY(-12px);
+        box-shadow: 0 45px 65px rgba(229, 142, 46, 0.35);
+      }
+    }
+
+    .hero-glass h1 {
+      font-size: 5.8rem;
+      font-weight: 800;
+      background: linear-gradient(145deg, #FFE6B3, #F2A65A, #F47C3C);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .btn-primary {
+      background: #E58E2E;
+      border: none;
+      padding: 1rem 2.8rem;
+      font-size: 1.4rem;
+      font-weight: 700;
+      border-radius: 60px;
+      color: #13100c;
+      box-shadow: 0 8px 0 #8B4B1A;
+      transition: 0.12s linear;
+      font-family: 'Inter', sans-serif;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-primary:active {
+      transform: translateY(4px);
+      box-shadow: 0 4px 0 #8B4B1A;
+    }
+
+    .photo-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 0px;
+      background:
+        url("https://images.unsplash.com/photo-1517705008128-361805f42e86");
+
+      background-size: cover;
+      background-position: center;
+
+      border-radius: 40px;
+
+      padding: 50px;
+    }
+
+    .photo-card {
+      width: 260px;
+      background: #fdfcf8;
+      padding: 12px 12px 55px;
+      border-radius: 6px;
+      box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.45),
+        0 2px 4px rgba(0, 0, 0, 0.15);
+
+      position: relative;
+      transition: all 0.5s ease;
+
+      transform-origin: center center;
+      animation: polaroidFloat 5s ease-in-out infinite;
+    }
+
+    @keyframes polaroidFloat {
+      0% {
+        transform: translateY(0px) rotate(var(--rotation));
+      }
+
+      50% {
+        transform: translateY(-8px) rotate(var(--rotation));
+      }
+
+      100% {
+        transform: translateY(0px) rotate(var(--rotation));
+      }
+    }
+
+
+    .photo-card img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      display: block;
+
+      border: 1px solid #ddd;
+    }
+
+    .photo-card::before {
+      content: "";
+
+      position: absolute;
+
+      width: 18px;
+      height: 18px;
+
+      background: #d94b4b;
+
+      border-radius: 50%;
+
+      top: -8px;
+      left: 50%;
+
+      transform: translateX(-50%);
+
+      box-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.4);
+    }
+
+    .photo-card::after {
+      content: "Memory";
+      position: absolute;
+      bottom: 15px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+
+      font-family: "Comic Sans MS", cursive;
+      color: #555;
+      font-size: 0.95rem;
+    }
+
+    .photo-card img.fade-transition {
+      opacity: 0;
+    }
+
+    .photo-card:hover {
+      transform: scale(1.08) rotate(0deg) !important;
+      z-index: 50;
+    }
+
+    .video-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 25px;
+      flex-wrap: nowrap;
+      /* keep videos side by side */
+      margin-top: 20px;
+    }
+
+    .video-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 30px;
+      background: rgba(255, 255, 255, .04);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 190, 100, .25);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, .5);
+      transition: .6s;
+
+      width: 48%;
+      /* two cards fit in one row */
+      max-width: 500px;
+      min-width: 320px;
+    }
+
+    @media (max-width: 900px) {
+
+      .video-wrapper {
+        flex-wrap: wrap;
+      }
+
+      .video-card {
+        width: 45%;
+        max-width: 450px;
+      }
+
+      .video-card video {
+        height: 320px;
+      }
+
+    }
+
+    .video-card:hover {
+      transform:
+        translateY(-12px) scale(1.03);
+
+      box-shadow:
+        0 30px 60px rgba(245, 163, 66, .3);
+    }
+
+    .video-card::before {
+      content: "";
+
+      position: absolute;
+      inset: -2px;
+
+      background: linear-gradient(45deg,
+          #f5a342,
+          transparent,
+          #ffcf7f);
+
+      z-index: -1;
+
+      filter: blur(12px);
+
+      opacity: 0;
+
+      transition: .5s;
+    }
+
+    .video-card:hover::before {
+      opacity: 1;
+    }
+
+    .play-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, .15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: white;
+      transition: .4s;
+      pointer-events: none;
+    }
+
+    .mute-btn {
+      position: absolute;
+      bottom: 15px;
+      right: 15px;
+      width: 50px;
+      height: 50px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, .65);
+      color: white;
+      font-size: 1.1rem;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      z-index: 5;
+      transition: 0.3s;
+    }
+
+    .mute-btn:hover {
+      transform: scale(1.08);
+      background: rgba(245, 163, 66, 0.9);
+    }
+
+
+
+    .video-card:hover .play-overlay {
+      transform:
+        translate(-50%, -50%) scale(1.15);
+    }
+
+    .play-overlay.hidden {
+      opacity: 0;
+    }
+
+    .video-section-wrapper {
+      position: relative;
+    }
+
+    .film-strip {
+      position: absolute;
+
+      top: 0;
+
+      width: 60px;
+      height: 100%;
+
+      opacity: .05;
+
+      pointer-events: none;
+
+      background:
+        repeating-linear-gradient(to bottom,
+          white 0 25px,
+          transparent 25px 50px);
+    }
+
+    .film-strip.left {
+      left: -20px;
+    }
+
+    .film-strip.right {
+      right: -20px;
+    }
+
+    .video-card video {
+      width: 100%;
+      height: 380px;
+      object-fit: contain;
+      background: #000;
+    }
+
+    .video-card video.fade-transition {
+      opacity: 0;
+    }
+
+    .court-queen-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .heroic-image {
+      max-width: 780px;
+      width: 95%;
+      margin: 20px auto;
+      border-radius: 52px;
+      overflow: hidden;
+      box-shadow: 0 30px 45px -15px black, 0 0 0 4px rgba(245, 170, 60, 0.6);
+    }
+
+    .heroic-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .court-quote {
+      font-size: 1.5rem;
+      background: rgba(0, 0, 0, 0.55);
+      display: inline-block;
+      padding: 0.6rem 2rem;
+      border-radius: 60px;
+      backdrop-filter: blur(8px);
+      margin-top: 1rem;
+    }
+
+    .vault-box {
+      background: #1e1c19cc;
+      border-radius: 48px;
+      padding: 2rem;
+      text-align: center;
+      border: 1px dashed #F5A342;
+    }
+
+    #password-input {
+      padding: 14px 24px;
+      font-size: 1.2rem;
+      border-radius: 60px;
+      border: none;
+      background: #FFF6ED;
+      width: 280px;
+      margin-right: 12px;
+      font-weight: 500;
+      outline: 2px solid #E1973A;
+    }
+
+    .exclusive-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 35px;
+    }
+
+    .exclusive-grid img {
+      width: 220px;
+      height: 260px;
+      object-fit: cover;
+      border-radius: 32px 12px 32px 12px;
+      box-shadow: 0 16px 28px black;
+      border: 2px solid #f5a742;
+      transition: 0.3s;
+    }
+
+    .exclusive-grid img:hover {
+      transform: scale(1.05);
+      filter: brightness(1.1);
+    }
+
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 1rem;
+      border-top: 1px solid #f5a74240;
+      margin-top: 1rem;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    #locked-content {
+      margin-top: 40px;
+      animation: fadeUp 0.7s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(35px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 750px) {
+      .hero-glass h1 {
+        font-size: 3rem;
+      }
+
+      .section-card {
+        padding: 2rem 1.5rem;
+        margin: 5rem 1rem;
+      }
+
+      h2 {
+        font-size: 2.2rem;
+      }
+    }
+
+    .floating-orb {
+      position: fixed;
+      pointer-events: none;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 200, 100, 0.6), rgba(255, 100, 50, 0.2));
+      filter: blur(2px);
+      z-index: 999;
+      animation: floatUpDown 8s infinite alternate;
+    }
+
+    @keyframes floatUpDown {
+      0% {
+        transform: translateY(0px) scale(1);
+        opacity: 0.4;
+      }
+
+      100% {
+        transform: translateY(-40px) scale(1.2);
+        opacity: 0.9;
+      }
+    }
+
+    /* ==========================================
+   MOBILE RESPONSIVE PATCH
+   Add at END of stylesheet
+========================================== */
+
+    @media (max-width: 768px) {
+
+      html,
+      body {
+        overflow-x: hidden;
+      }
+
+      /* ---------- NAVBAR ---------- */
+
+      .navbar {
+        width: 95%;
+        padding: 0.55rem;
+        gap: 0.2rem;
+
+        top: auto;
+        bottom: 15px;
+
+        border-radius: 22px;
+
+        backdrop-filter: blur(20px);
+
+        z-index: 9999;
+      }
+
+      .navbar a {
+        flex: 1;
+        justify-content: center;
+        font-size: 0.75rem;
+        padding: 0.65rem 0.4rem;
+      }
+
+      .navbar a span {
+        display: none;
+      }
+
+      /* ---------- HERO ---------- */
+
+      .hero {
+        min-height: 100vh;
+        padding: 1rem;
+      }
+
+      .hero-glass {
+        width: 100%;
+        padding: 2rem 1.2rem;
+        border-radius: 40px;
+      }
+
+      .hero-glass h1 {
+        font-size: clamp(2rem, 9vw, 3.4rem);
+        line-height: 1.05;
+      }
+
+      .hero-tagline {
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin-top: 12px;
+      }
+
+      .hero p {
+        font-size: 1rem !important;
+      }
+
+      .btn-primary {
+        width: 100%;
+        justify-content: center;
+        font-size: 1rem;
+        padding: 0.9rem 1.3rem;
+      }
+
+      /* ---------- SECTION CARDS ---------- */
+
+      .section-card {
+        margin: 3rem 0.8rem;
+        padding: 1.5rem;
+        border-radius: 28px;
+      }
+
+      h2 {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+      }
+
+      /* ---------- MEMORIES HEADER ---------- */
+
+      .memories-header {
+        margin: 40px 0;
+      }
+
+      .memories-header h3 {
+        font-size: 1.8rem;
+      }
+
+      .memories-header p {
+        font-size: 0.95rem;
+      }
+
+      /* ---------- PHOTO GALLERY ---------- */
+
+      .photo-grid {
+        padding: 20px 10px;
+        gap: 18px;
+        border-radius: 22px;
+      }
+
+      .photo-card {
+        width: 46%;
+        max-width: 170px;
+        padding: 8px 8px 42px;
+        animation: none;
+      }
+
+      .photo-card img {
+        height: 190px;
+      }
+
+      .photo-card:hover {
+        transform: none !important;
+      }
+
+      /* ---------- VIDEOS ---------- */
+
+      .video-wrapper {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .video-card {
+        width: 100%;
+        min-width: auto;
+        max-width: 100%;
+        border-radius: 22px;
+      }
+
+      .video-card video {
+        height: 260px;
+      }
+
+      .play-overlay {
+        width: 65px;
+        height: 65px;
+        font-size: 1.4rem;
+      }
+
+      /* ---------- COURT QUEEN ---------- */
+
+      .heroic-image {
+        width: 100%;
+        border-radius: 24px;
+      }
+
+      .court-quote {
+        font-size: 1rem;
+        padding: 0.9rem 1rem;
+        line-height: 1.6;
+        border-radius: 18px;
+      }
+
+      /* ---------- VAULT ---------- */
+
+      .vault-box {
+        padding: 1.5rem 1rem;
+        border-radius: 24px;
+      }
+
+      .riddle-text {
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-top: 15px;
+      }
+
+      #password-input {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 12px;
+        font-size: 1rem;
+      }
+
+      #unlock-btn {
+        width: 100%;
+      }
+
+      /* ---------- EXCLUSIVE PHOTOS ---------- */
+
+      .exclusive-grid {
+        gap: 15px;
+      }
+
+      .exclusive-grid img {
+        width: 100%;
+        max-width: 240px;
+        height: auto;
+      }
+
+      /* ---------- FOOTER ---------- */
+
+      .footer {
+        font-size: 0.85rem;
+        padding: 1.5rem 1rem 6rem;
+      }
+
+      /* ---------- FILM STRIPS ---------- */
+
+      .film-strip {
+        display: none;
+      }
+
+      /* ---------- FLOATING ORBS ---------- */
+
+      .floating-orb {
+        display: none;
+      }
+    }
+
+    /* ==========================================
+   EXTRA SMALL DEVICES
+   iPhone SE / older Android
+========================================== */
+
+    @media (max-width: 420px) {
+
+      .hero-glass h1 {
+        font-size: 1.8rem;
+      }
+
+      .photo-card {
+        width: 44%;
+        max-width: 145px;
+      }
+
+      .photo-card img {
+        height: 165px;
+      }
+
+      h2 {
+        font-size: 1.7rem;
+      }
+
+      .court-quote {
+        font-size: 0.9rem;
+      }
+
+      .navbar a {
+        font-size: 0.7rem;
+      }
+    }
+
+    /* ==========================================
+   TOUCH DEVICE IMPROVEMENTS
+========================================== */
+
+    @media (hover: none) {
+
+      .photo-card:hover,
+      .video-card:hover,
+      .section-card:hover,
+      .navbar a:hover {
+        transform: none !important;
+        box-shadow: inherit;
+      }
+
+      .btn-primary:active {
+        transform: scale(0.97);
+      }
+
+      .photo-card:active {
+        transform: scale(1.03);
+      }
+
+      .video-card:active {
+        transform: scale(1.02);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- LOADING SCREEN -->
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loading-container">
+      <div class="loading-spinner"></div>
+      <div class="loading-title">✨ Preparing something special for Parthi... ✨</div>
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <div class="loading-percent" id="loadingPercent">0%</div>
+      <div class="loading-message" id="loadingMessage">Collecting memories...</div>
+    </div>
+  </div>
+
+  <div id="canvas-container"></div>
+  <div class="ambient-overlay"></div>
+  <div id="antiGravityField"></div>
+
+  <!-- NAVIGATION -->
+  <div class="navbar" id="navbar">
+    <a href="#gallerySection"><i class="fas fa-images"></i> <span>Gallery</span></a>
+    <a href="#courtQueen"><i class="fas fa-basketball-ball"></i> <span>Court Queen</span></a>
+    <a href="#vaultSection"><i class="fas fa-lock"></i> <span>Inner Sanctum</span></a>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero" id="heroSection">
+    <div class="hero-glass" id="heroCard">
+      <h1>🏀 PARTHI GAJORA 🏀</h1>
+      <div class="hero-tagline">
+        <i class="fas fa-crown" style="color:#FFC857;"></i> The Court Queen · St. Xavier's Titan <i class="fas fa-heart"
+          style="color:#ff7b6e;"></i>
+      </div>
+      <p style="margin-bottom: 2rem; font-size: 1.2rem;">— A tribute to your incredible spirit, Parthi</p>
+      <button class="btn-primary" id="enterCelebration"><i class="fas fa-gem"></i> Unveil the Celebration</button>
+    </div>
+  </section>
+
+  <!-- GALLERY SECTION -->
+  <section class="section-card" id="gallerySection">
+    <h2>📸 Polaroids of Radiance</h2>
+    <div class="photo-grid" id="imageGallery"></div>
+
+    <div class="memories-header">
+      <h3>🎬 Moments In Motion</h3>
+      <p>
+        Some memories deserve more than a photograph.
+      </p>
+    </div>
+    <div class="video-section-wrapper">
+
+      <div class="film-strip left"></div>
+
+      <div class="video-wrapper" id="videoGallery"></div>
+
+      <div class="film-strip right"></div>
+
+    </div>
+    <p style="text-align:center; margin-top: 1.8rem; opacity:0.85;">✨ Every victory, every smile — legendary ✨</p>
+  </section>
+
+  <!-- COURT QUEEN SECTION -->
+  <section class="section-card" id="courtQueen">
+    <h2>🏀 Court Queen 🏀</h2>
+    <div class="court-queen-container">
+      <div class="heroic-image">
+        <img src="assets/images/basketball_championship.jpg" alt="Court Queen Championship"
+          onerror="this.src='https://placehold.co/900x600/2a241c/e2b05a?text=QUEEN+OF+THE+COURT'">
+      </div>
+      <div class="court-quote">
+        <i class="fas fa-trophy" style="color:#FFD966;"></i> St. Xavier's undisputed champion · Tallest presence &
+        fiercest heart
+      </div>
+    </div>
+  </section>
+
+  <!-- SECRET VAULT -->
+  <section class="section-card" id="vaultSection">
+    <h2>🔐 The Inner Sanctum 🔐</h2>
+    <div class="vault-box">
+      <p><i class="fas fa-brain"></i> Only the Queen herself can unlock this vault.</p>
+      <div class="riddle-text">
+        <i class="fas fa-question-circle"></i> “Who were you standing beside in your birthday cake last year ?”
+      </div>
+      <div style="margin: 20px 0;">
+        <input type="text" id="password-input" placeholder="Your answer..." autocomplete="off">
+        <button id="unlock-btn" class="btn-primary" style="padding: 14px 28px; font-size: 1.2rem;"><i
+            class="fas fa-unlock-alt"></i> Reveal</button>
+      </div>
+      <div id="locked-content" class="hidden">
+        <h3 style="color:#FFC46B;">💛 You got it, Champ! 💛</h3>
+        <p style="font-size: 1.4rem; font-weight: 500;">The magic of shared smiles — nobody gets it like we do.</p>
+        <div class="exclusive-grid">
+          <img src="assets/images/exclusive1.jpg" alt="exclusive"
+            onerror="this.src='https://placehold.co/300x360/3e2b1a/e7b551?text=⭐+Shine+On'">
+          <img src="assets/images/exclusive2.jpg" alt="exclusive"
+            onerror="this.src='https://placehold.co/300x360/3e2b1a/e7b551?text=✨+Keep+Rising'">
+          <img src="assets/images/exclusive3.jpg" alt="exclusive"
+            onerror="this.src='https://placehold.co/300x360/3e2b1a/e7b551?text=🎂+21+Looks+Royal'">
+        </div>
+        <p
+          style="margin-top: 2rem; font-size: 1.3rem; background: #2a231cb3; display: inline-block; padding: 12px 28px; border-radius: 60px;">
+          “Your energy inspires everyone around you. Happy 21st, legend. — Alan”</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer">
+    <i class="fas fa-infinity"></i> For the woman who dominates the court and every room she enters · 21 looks legendary
+    on you <i class="fas fa-heart" style="color:#ff8888;"></i>
+  </div>
+
+  <script type="module">
+    import * as THREE from 'https://unpkg.com/three@0.128.0/build/three.module.js';
+
+    // ========== LOADING SCREEN SIMULATION ==========
+    const loadingScreen = document.getElementById('loadingScreen');
+    const progressBar = document.getElementById('progressBar');
+    const loadingPercent = document.getElementById('loadingPercent');
+    const loadingMessage = document.getElementById('loadingMessage');
+
+    const loadingMessages = [
+      "Collecting memories... 📸",
+      "Finding your best moments... 🏀",
+      "Polishing the court highlights... ✨",
+      "Preparing confetti... 🎉",
+      "Almost there... 💫",
+      "Adding stardust... 🌟",
+      "Warming up the celebration... 🔥"
+    ];
+
+    let progress = 0;
+    const loadingInterval = setInterval(() => {
+      progress += Math.random() * 8 + 2;
+      if (progress >= 100) {
+        progress = 100;
+        clearInterval(loadingInterval);
+        setTimeout(() => {
+          loadingScreen.style.opacity = '0';
+          setTimeout(() => {
+            loadingScreen.style.display = 'none';
+          }, 800);
+        }, 500);
+      }
+      progressBar.style.width = progress + '%';
+      loadingPercent.textContent = Math.floor(progress) + '%';
+
+      if (Math.random() > 0.7) {
+        loadingMessage.textContent = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
+      }
+    }, 200);
+
+    // ========== THREE.JS BACKGROUND ==========
+    const container = document.getElementById('canvas-container');
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x030203);
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 1.5, 13);
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(
+      Math.min(window.devicePixelRatio, 1.5)
+    );
+    container.appendChild(renderer.domElement);
+
+    // Starfield
+    const starGeometry = new THREE.BufferGeometry();
+    const isMobile = window.innerWidth < 768;
+    const starCount = isMobile ? 700 : 2400;
+    const starPositions = new Float32Array(starCount * 3);
+    for (let i = 0; i < starCount; i++) {
+      starPositions[i * 3] = (Math.random() - 0.5) * 250;
+      starPositions[i * 3 + 1] = (Math.random() - 0.5) * 120;
+      starPositions[i * 3 + 2] = (Math.random() - 0.5) * 80 - 40;
+    }
+    starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+    const starMaterial = new THREE.PointsMaterial({ color: 0xffd9a5, size: 0.13, transparent: true, opacity: 0.8 });
+    const stars = new THREE.Points(starGeometry, starMaterial);
+    scene.add(stars);
+
+    // Floating spheres
+    const floatSpheres = [];
+    const sphereCount = isMobile ? 20 : 90;
+    const sphereGeom = new THREE.SphereGeometry(0.07, 6, 6);
+    for (let i = 0; i < sphereCount; i++) {
+      const material = new THREE.MeshStandardMaterial({ color: 0xffaa66, emissive: 0xcc5522, emissiveIntensity: 0.5 });
+      const sphere = new THREE.Mesh(sphereGeom, material);
+      sphere.userData = {
+        speedX: (Math.random() - 0.5) * 0.012,
+        speedY: (Math.random() - 0.5) * 0.012,
+        radiusX: 4 + Math.random() * 8,
+        radiusY: 3 + Math.random() * 7,
+        angleX: Math.random() * Math.PI * 2,
+        angleY: Math.random() * Math.PI * 2,
+        offsetZ: (Math.random() - 0.5) * 6
+      };
+      scene.add(sphere);
+      floatSpheres.push(sphere);
+    }
+
+    const ambientLight = new THREE.AmbientLight(0x2a1f12);
+    scene.add(ambientLight);
+    const mainLight = new THREE.DirectionalLight(0xF5A342, 1.2);
+    mainLight.position.set(3, 5, 4);
+    scene.add(mainLight);
+    const backLight = new THREE.PointLight(0xff8844, 0.8);
+    backLight.position.set(-2, 1, -5);
+    scene.add(backLight);
+    const fillLight = new THREE.PointLight(0xffaa66, 0.5);
+    fillLight.position.set(1, 2, 3);
+    scene.add(fillLight);
+
+    let time = 0;
+    function animateUniverse() {
+      requestAnimationFrame(animateUniverse);
+      time += 0.007;
+      stars.rotation.y += 0.0004;
+      stars.rotation.x += 0.0002;
+      floatSpheres.forEach((sphere, idx) => {
+        const d = sphere.userData;
+        d.angleX += d.speedX;
+        d.angleY += d.speedY;
+        sphere.position.x = Math.sin(d.angleX) * d.radiusX;
+        sphere.position.y = Math.cos(d.angleY) * d.radiusY;
+        sphere.position.z = Math.sin(d.angleX * 0.8) * 2.5 + d.offsetZ;
+        const intensity = 0.5 + Math.sin(time * 2.5 + idx) * 0.4;
+        sphere.material.emissiveIntensity = intensity * 0.7;
+      });
+      camera.position.x += (0 - camera.position.x) * 0.02;
+      camera.position.y += (0.3 - camera.position.y) * 0.02;
+      camera.lookAt(0, 0, 0);
+      renderer.render(scene, camera);
+    }
+    animateUniverse();
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // ========== REST OF THE CODE (Gallery, Password, etc) ==========
+    gsap.registerPlugin(ScrollTrigger);
+
+    document.querySelectorAll('.navbar a').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href').substring(1);
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    const enterBtn = document.getElementById('enterCelebration');
+    const heroSection = document.querySelector('.hero');
+    const heroCardElem = document.getElementById('heroCard');
+    enterBtn.addEventListener('click', () => {
+      gsap.to(heroCardElem, { y: -80, opacity: 0, duration: 0.9 });
+      gsap.to(heroSection, {
+        opacity: 0, duration: 1.2, delay: 0.3, onComplete: () => {
+          heroSection.style.display = 'none';
+          document.getElementById('gallerySection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+          for (let i = 0; i < 150; i++) {
+            const conf = document.createElement('div');
+            conf.innerHTML = ['🎉', '🎊', '✨', '🌟', '🏀', '💫'][Math.floor(Math.random() * 6)];
+            conf.style.position = 'fixed';
+            conf.style.left = Math.random() * window.innerWidth + 'px';
+            conf.style.top = '-40px';
+            conf.style.fontSize = (22 + Math.random() * 28) + 'px';
+            conf.style.pointerEvents = 'none';
+            conf.style.zIndex = '9999';
+            conf.style.transition = 'all 1.5s cubic-bezier(0.2, 0.9, 0.4, 1.2)';
+            document.body.appendChild(conf);
+            setTimeout(() => { conf.style.transform = `translateY(${window.innerHeight + 120}px) rotate(${Math.random() * 400}deg)`; conf.style.opacity = '0'; }, 20);
+            setTimeout(() => conf.remove(), 1700);
+          }
+        }
+      });
+    });
+
+    const sections = document.querySelectorAll('.section-card');
+    sections.forEach((sec, i) => {
+      gsap.fromTo(sec, { opacity: 0, y: 45 }, {
+        opacity: 1, y: 0, duration: 1.1, delay: i * 0.1,
+        scrollTrigger: { trigger: sec, start: "top 85%", toggleActions: "play none none reverse" }
+      });
+    });
+
+    // Dynamic Photo/Video Gallery
+    const PHOTO_BASE_PATH = 'assets/images/photo';
+    const VIDEO_BASE_PATH = 'assets/videos/video';
+    let availablePhotos = [];
+    let availableVideos = [];
+    const YOUR_VIDEOS = [];
+
+    for (let i = 1; i <= 16; i++) {
+      YOUR_VIDEOS.push(`assets/videos/video${i}.mp4`);
+    }
+
+    async function discoverMedia() {
+
+      // ========= LOAD PHOTOS =========
+      for (let i = 1; i <= 65; i++) {
+        const imgPath = `${PHOTO_BASE_PATH}${i}.jpg`;
+
+        await new Promise(resolve => {
+          const img = new Image();
+
+          img.onload = () => {
+            availablePhotos.push(imgPath);
+            resolve();
+          };
+
+          img.onerror = () => resolve();
+
+          img.src = imgPath;
+        });
+      }
+
+      // fallback photos
+      if (availablePhotos.length === 0) {
+        for (let i = 1; i <= 12; i++) {
+          availablePhotos.push(
+            `https://placehold.co/400x500/2e2a24/e2b05a?text=📸+Memory+${i}`
+          );
+        }
+      }
+
+      // ========= LOAD VIDEOS =========
+      for (const videoPath of YOUR_VIDEOS) {
+
+        await new Promise(resolve => {
+
+          const video = document.createElement('video');
+
+          video.onloadeddata = () => {
+            availableVideos.push(videoPath);
+            resolve();
+          };
+
+          video.onerror = () => {
+            console.log("Video failed:", videoPath);
+            resolve();
+          };
+
+          video.src = videoPath;
+
+        });
+
+      }
+
+      console.log("VIDEOS FOUND:", availableVideos);
+
+      // fallback videos
+      if (availableVideos.length === 0) {
+
+        availableVideos.push(
+          'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
+        );
+
+        availableVideos.push(
+          'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFunflies.mp4'
+        );
+
+      }
+
+      initializeGalleries();
+    }
+
+    const photoGrid = document.getElementById('imageGallery');
+    const videoGrid = document.getElementById('videoGallery');
+    let photoCards = [];
+    let videoElements = [];
+    let photoInterval, videoInterval;
+
+    function initializeGalleries() {
+      for (let i = 0; i < 8; i++) {
+        const card = document.createElement('div');
+        card.className = 'photo-card';
+        const rotation = (Math.random() * 16) - 8;
+
+        card.style.setProperty(
+          '--rotation',
+          `${rotation}deg`
+        );
+        card.style.transform = `rotate(${rotation}deg)`;
+
+        card.style.marginTop =
+          Math.floor(Math.random() * 40) + "px";
+
+        card.style.zIndex =
+          Math.floor(Math.random() * 20);
+        const img = document.createElement('img');
+        img.alt = `Memory ${i + 1}`;
+        card.appendChild(img);
+        photoGrid.appendChild(card);
+        photoCards.push(card);
+      }
+
+      for (let i = 0; i < 2; i++) {
+
+        const card = document.createElement('div');
+        card.className = 'video-card';
+
+        const video = document.createElement('video');
+
+        video.controls = false;
+        video.autoplay = true;
+        video.loop = false;
+
+        video.muted = true;      // start muted for autoplay
+        video.playsInline = true;
+
+        const overlay = document.createElement('div');
+        overlay.className = 'play-overlay';
+        overlay.innerHTML = '<i class="fas fa-play"></i>';
+        const muteBtn = document.createElement('button');
+
+        muteBtn.className = 'mute-btn';
+        muteBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+
+        muteBtn.addEventListener('click', (e) => {
+
+          e.stopPropagation();
+
+          video.muted = !video.muted;
+
+          muteBtn.innerHTML = video.muted
+            ? '<i class="fas fa-volume-mute"></i>'
+            : '<i class="fas fa-volume-up"></i>';
+
+        });
+
+        video.addEventListener('play', () => {
+          overlay.classList.add('hidden');
+        });
+
+        video.addEventListener('pause', () => {
+          overlay.classList.remove('hidden');
+        });
+
+        video.addEventListener('ended', () => {
+
+          overlay.classList.remove('hidden');
+
+          // Find videos already playing in other cards
+          const videosInUse = videoElements
+            .filter(v => v !== video)
+            .map(v => v.currentSrc || v.src);
+
+          // Available choices excluding videos already in use
+          const availableChoices = availableVideos.filter(v =>
+            !videosInUse.some(used => used.includes(v))
+          );
+
+          const sourcePool =
+            availableChoices.length > 0
+              ? availableChoices
+              : availableVideos;
+
+          const randomVideo =
+            sourcePool[Math.floor(Math.random() * sourcePool.length)];
+
+          video.src = randomVideo;
+          video.load();
+          video.play().catch(() => { });
+
+        });
+
+        card.appendChild(video);
+        card.appendChild(overlay);
+        card.appendChild(muteBtn);
+
+        videoGrid.appendChild(card);
+
+        videoElements.push(video);
+      }
+
+      refreshAllPhotos();
+      refreshAllVideos();
+
+      photoInterval = setInterval(() => {
+        refreshAllPhotos();
+      }, 10000);
+    }
+
+    function getRandomPhotoUrls(count) {
+      if (availablePhotos.length === 0) return [];
+      const shuffled = [...availablePhotos];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled.slice(0, count);
+    }
+
+    function getRandomVideoUrls(count) {
+      if (availableVideos.length === 0) return [];
+      const shuffled = [...availableVideos];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled.slice(0, count);
+    }
+
+    function refreshAllPhotos() {
+      const newPhotoUrls = getRandomPhotoUrls(8);
+      photoCards.forEach((card, index) => {
+        const img = card.querySelector('img');
+        if (img && newPhotoUrls[index]) {
+          img.classList.add('fade-transition');
+          setTimeout(() => {
+            img.src = newPhotoUrls[index];
+            img.onerror = () => {
+              if (!img.src.includes('placehold.co')) {
+                img.src = `https://placehold.co/400x500/2e2a24/e2b05a?text=📸+Memory`;
+              }
+            };
+            setTimeout(() => img.classList.remove('fade-transition'), 50);
+          }, 300);
+        }
+      });
+    }
+
+    function refreshAllVideos() {
+
+      const shuffled = [...availableVideos];
+
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+
+      const newVideoUrls = shuffled.slice(0, 2);
+
+      videoElements.forEach((video, index) => {
+
+        if (!newVideoUrls[index]) return;
+
+        video.pause();
+
+        video.src = newVideoUrls[index];
+        video.load();
+
+        video.play().catch(() => { });
+
+      });
+    }
+
+    discoverMedia();
+
+    // Password Logic
+    const correctAnswer = "virat";
+    const unlockButton = document.getElementById('unlock-btn');
+    const pwdInput = document.getElementById('password-input');
+    const lockedDiv = document.getElementById('locked-content');
+    unlockButton.addEventListener('click', () => {
+      const answer = pwdInput.value.trim().toLowerCase();
+      if (answer === correctAnswer) {
+        lockedDiv.classList.remove('hidden');
+        gsap.fromTo(lockedDiv, { scale: 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.7, ease: "back.out(1)" });
+        for (let i = 0; i < 80; i++) {
+          const conf = document.createElement('div');
+          conf.innerHTML = ['✨', '🌟', '🎉', '🏀', '💖'][Math.floor(Math.random() * 5)];
+          conf.style.position = 'fixed';
+          conf.style.left = Math.random() * window.innerWidth + 'px';
+          conf.style.top = '-20px';
+          conf.style.fontSize = (20 + Math.random() * 25) + 'px';
+          conf.style.pointerEvents = 'none';
+          conf.style.zIndex = '10001';
+          conf.style.transition = 'all 1.2s linear';
+          document.body.appendChild(conf);
+          setTimeout(() => { conf.style.transform = `translateY(${window.innerHeight + 80}px) rotate(${Math.random() * 400}deg)`; conf.style.opacity = '0'; }, 20);
+          setTimeout(() => conf.remove(), 1400);
+        }
+      } else {
+        alert("❌ Not the secret word! Try again, Queen 👑");
+        pwdInput.style.outline = "3px solid #E06C6C";
+        setTimeout(() => pwdInput.style.outline = "2px solid #E1973A", 500);
+      }
+    });
+
+    gsap.fromTo(".hero-glass", { scale: 0.92, opacity: 0 }, { scale: 1, opacity: 1, duration: 1.3, ease: "elastic.out(1, 0.5)", delay: 0.2 });
+
+    // Anti-gravity floating orbs
+    const antiField = document.getElementById('antiGravityField');
+    for (let i = 0; i < 45; i++) {
+      const orb = document.createElement('div');
+      orb.classList.add('floating-orb');
+      const size = 15 + Math.random() * 55;
+      orb.style.width = size + 'px';
+      orb.style.height = size + 'px';
+      orb.style.left = Math.random() * 100 + '%';
+      orb.style.top = Math.random() * 100 + '%';
+      orb.style.animationDuration = 6 + Math.random() * 12 + 's';
+      orb.style.animationDelay = Math.random() * 5 + 's';
+      orb.style.opacity = 0.3 + Math.random() * 0.5;
+      orb.style.background = `radial-gradient(circle, rgba(255, ${150 + Math.random() * 100}, 80, 0.6), rgba(255, 100, 50, 0.2))`;
+      antiField.appendChild(orb);
+    }
+
+    document.addEventListener('mousemove', (e) => {
+      const orbs = document.querySelectorAll('.floating-orb');
+      const mouseX = e.clientX / window.innerWidth;
+      const mouseY = e.clientY / window.innerHeight;
+      orbs.forEach((orb, idx) => {
+        const moveX = (mouseX - 0.5) * 20 * (idx % 3);
+        const moveY = (mouseY - 0.5) * 15 * (idx % 2);
+        orb.style.transform = `translate(${moveX}px, ${moveY}px)`;
+      });
+    });
+  </script>
+</body>
+
+</html>
