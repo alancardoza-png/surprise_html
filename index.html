@@ -1125,7 +1125,9 @@
     <i class="fas fa-infinity"></i> For the woman who dominates the court and every room she enters · 21 looks legendary
     on you <i class="fas fa-heart" style="color:#ff8888;"></i>
   </div>
-
+  <audio id="bgMusic" loop>
+    <source src="assets/audio/birthday_music.mp3" type="audio/mpeg">
+  </audio>
   <script type="module">
     import * as THREE from 'https://unpkg.com/three@0.128.0/build/three.module.js';
 
@@ -1267,9 +1269,12 @@
     });
 
     const enterBtn = document.getElementById('enterCelebration');
+    const bgMusic = document.getElementById('bgMusic');
+    bgMusic.volume = 0.05; // 8% volume
     const heroSection = document.querySelector('.hero');
     const heroCardElem = document.getElementById('heroCard');
     enterBtn.addEventListener('click', () => {
+      bgMusic.play().catch(() => { });
       gsap.to(heroCardElem, { y: -80, opacity: 0, duration: 0.9 });
       gsap.to(heroSection, {
         opacity: 0, duration: 1.2, delay: 0.3, onComplete: () => {
@@ -1290,14 +1295,6 @@
             setTimeout(() => conf.remove(), 1700);
           }
         }
-      });
-    });
-
-    const sections = document.querySelectorAll('.section-card');
-    sections.forEach((sec, i) => {
-      gsap.fromTo(sec, { opacity: 0, y: 45 }, {
-        opacity: 1, y: 0, duration: 1.1, delay: i * 0.1,
-        scrollTrigger: { trigger: sec, start: "top 85%", toggleActions: "play none none reverse" }
       });
     });
 
